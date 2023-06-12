@@ -1,0 +1,88 @@
+{% load static %}
+<!doctype html>
+<html lang="en" dir="ltr">
+    <head>
+        <!-- META DATA -->
+        <meta charset="UTF-8">
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="Sash – Django Bootstrap 5 Admin & Dashboard Template">
+        <meta name="author" content="Spruko Technologies Private Limited">
+        <meta name="keywords" content="admin dashboard bootstrap 5, best admin panel template, bootstrap 5 admin panel, bootstrap 5 admin, cool admin template, django admin panel, django admin template, django admin, django dashboard template, django dashboard, django framework, django, modern admin template, simple dashboard bootstrap, themeforest admin template,">
+        <!-- title -->
+        <title>{% block title %}{% endblock %}</title>
+        {% include 'components/layouts/custom-styles.html' %}
+        {% block styles %} {% endblock %}
+    </head>
+
+    <body class="app sidebar-mini ltr">
+        <!-- BACKGROUND-IMAGE -->
+        <div class="login-img">
+            <!-- global-loader -->
+            <div id="global-loader">
+                <img src="{% static 'assets/images/loader.svg' %}" class="loader-img" alt="Loader">
+            </div>
+            <!-- global-loader closed -->
+            <!-- PAGE -->
+            <div class="page">
+                <div class="">
+                    <!-- Theme-Layout -->
+                    {% block content %} {% endblock %}
+                </div>
+            </div>
+            <!-- End PAGE -->
+        </div>
+        {% include 'components/layouts/custom-scripts.html' %}
+        <script>
+            // Success toast initialization
+            var successToastMixin = Swal.mixin({
+                toast: true,
+                icon: 'success',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            // Failure toast initialization
+            var errorToastMixin = Swal.mixin({
+                toast: true,
+                icon: 'error',
+                title: 'General Title',
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'alert-danger' %}
+                        errorToastMixin.fire({
+                            animation: true,
+                            title: `{{message}}`,
+                        });
+                    {% else %}
+                        successToastMixin.fire({
+                            animation: true,
+                            title: `{{message}}`,
+                        });
+                    {% endif %}
+                    
+                {% endfor %}
+            {% endif %}
+        </script>
+        {% block scripts %} {% endblock %}
+    </body>
+</html>

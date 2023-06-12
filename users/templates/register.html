@@ -1,0 +1,118 @@
+{% extends 'components/custom-base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}{{title}}{% endblock %}
+{% block styles %}
+    <style>
+        .user-type {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <!-- CONTAINER OPEN -->
+    <div class="col-login mx-auto mt-7">
+        <div class="text-center">
+            <img src="{% static 'assets/images/brand/logo-white.png'%}" class="header-brand-img m-0" alt="PyTutor-OM Logo">
+        </div>
+    </div>
+    <div class="container-login100">
+        <div class="wrap-login100 p-6">
+            <form class="login100-form validate-form" method="POST">
+                {% csrf_token %}
+                <span class="login100-form-title">
+					Registration
+				</span>
+               <div class="wrap-input100 validate-input input-group" data-bs-validate="Valid username is required: jhondoe">
+                    <a href="javascript:void(0)" class="input-group-text bg-white text-muted">
+                        <i class="mdi mdi-account text-muted" aria-hidden="true"></i>
+                    </a>
+                    {% render_field form.username class="input100 form-control" placeholder="UserName" required="true" %}
+                </div>
+                <div class="wrap-input100 validate-input input-group" data-bs-validate="Valid email is required: ex@abc.xyz">
+                    <a href="javascript:void(0)" class="input-group-text bg-white text-muted">
+                        <i class="zmdi zmdi-email" aria-hidden="true"></i>
+                    </a>
+                    {% render_field form.email class="input100 form-control"  placeholder="Email" required="true" %}
+                </div>
+                <div class="wrap-input100 validate-input input-group" id="Password-toggle">
+                    <a href="javascript:void(0)" class="input-group-text bg-white text-muted">
+                        <i class="zmdi zmdi-eye text-muted" aria-hidden="true"></i>
+                    </a>
+                    {% render_field form.password1 class="input100 form-control"  placeholder="Password" required="true" %}
+                </div>
+                <div class="wrap-input100 validate-input input-group" id="Password-toggle">
+                    <a href="javascript:void(0)" class="input-group-text bg-white text-muted">
+                        <i class="zmdi zmdi-eye text-muted" aria-hidden="true"></i>
+                    </a>
+                    {% render_field form.password2 class="input100 form-control"  placeholder="Confirm Password" required="true" %}
+                </div>
+                <div class="text-center pt-3">
+                    <p class="text-dark mb-0">You're registering for?</p>
+                </div>
+                <div class="mt-4 user-type">
+                    {% for choice in form.user_type %}
+                        <label class="custom-control custom-radio">
+                            {{choice.tag}}
+                            <span class="custom-control-label">{{ choice.choice_label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div class="container-login100-form-btn">
+                    <button type="submit" class="login100-form-btn btn-primary">
+						Register
+					</button>
+                </div>
+                <div class="text-center pt-3">
+                    <p class="text-dark mb-0">Already have account?<a href="{% url 'users:login' %}" class="text-primary ms-1">Sign In</a></p>
+                </div>
+               <!--  <label class="login-social-icon"><span>Register with Social</span></label>
+                <div class="d-flex justify-content-center">
+                    <a href="javascript:void(0)">
+                        <div class="social-login me-4 text-center">
+                            <i class="fa fa-google"></i>
+                        </div>
+                    </a>
+                    <a href="javascript:void(0)">
+                        <div class="social-login me-4 text-center">
+                            <i class="fa fa-facebook"></i>
+                        </div>
+                    </a>
+                    <a href="javascript:void(0)">
+                        <div class="social-login text-center">
+                            <i class="fa fa-twitter"></i>
+                        </div>
+                    </a>
+                </div> -->
+            </form>
+        </div>
+    </div>
+    <!-- CONTAINER CLOSED -->
+{% endblock %}
+{% block scripts %}
+    <script>
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    errorToastMixin.fire({
+                        animation: true,
+                        title: `{{ error|escape }}`,
+                    });
+                    
+                {% endfor %}
+            {% endfor %}
+
+            {% for error in form.non_field_errors %}
+                errorToastMixin.fire({
+                    animation: true,
+                    title: `{{ error|escape }}`,
+                });
+                    
+            {% endfor %}
+
+        {% endif %}
+    </script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+        <h1 class="page-title">Explore Courses</h1>
+        <div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'students_portal:students-dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Explore Courses</li>
+            </ol>
+        </div>
+    </div>
+    <!-- PAGE-HEADER END -->
+
+    <div class="row">
+        {% for course in courses %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Course</h3>
+                </div>
+                <div class="card-body">
+                    <h4>{{course.title}}</h4>
+                    <div class="pt-4">
+                        <p class="text-justify">{{course.description|truncatewords:100}}</p>
+                    </div>
+                    <div class="d-md-flex">
+                        <a href="{% url 'students_portal:course-detail' slug=course.slug %}" class="btn btn-primary me-4 mb-2">View Details</a>
+                        <div class="d-flex ms-auto">
+                            <a href="javascript:void(0);" class="d-flex me-4 mb-2" title="Creation Date">
+                                <i class="fe fe-calendar fs-16 me-1 p-3 bg-secondary-transparent text-secondary bradius"></i>
+                                <div class="mt-0 mt-3 ms-1 text-muted font-weight-semibold">{{course.created_on|date:"M d, Y"}}</div>
+                            </a>
+                            <a href="#" class="d-flex mb-2" title="Course Creator">
+                                <i class="fe fe-user fs-16 me-1 p-3 bg-primary-transparent text-primary bradius"></i>
+                                <div class="mt-0 mt-3 ms-1 text-muted font-weight-semibold">
+                                    {{course.created_by.get_full_name}}
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            {% include 'components/layouts/empty_state.html' %}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,319 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{{title}}</h3>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <!-- Fields for handling dynamic form rendering -->
+                    {% comment %}These fields are cumplosy for th dynamic form generation and javascript code depends their id/name, so don't change anything in these fields or javascript code will break.{% endcomment %}
+                    <input type="hidden" name="form-TOTAL_FORMS" value="{{quiz.get_question_count}}" id="id_form-TOTAL_FORMS">
+                    <input type="hidden" name="form-INITIAL_FORMS" value="0" id="id_form-INITIAL_FORMS">
+                    <input type="hidden" name="form-MIN_NUM_FORMS" value="1" id="id_form-MIN_NUM_FORMS">
+                    <input type="hidden" name="form-MAX_NUM_FORMS" value="1000" id="id_form-MAX_NUM_FORMS">
+                    <div class="card-body">
+                        <!-- Main quiz info fields -->
+                        <div class="form-group">
+                            <label for="quiz-title" class="form-label">Quiz Title</label>
+                            <input type="text" class="form-control" id="quiz-title" name="quiz-title" value="{{quiz.title}}" placeholder="Enter quiz title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quiz-topic" class="form-label">Topic</label>
+                            <select class="form-control" id="quiz-topic" name="quiz-topic" required>
+                                <option disabled>Select topic for quiz</option>
+                                {% for topic in topics %}
+                                    <option value="{{topic.pk}}" {% if quiz.topic_id == topic.pk %}selected{% endif %}>{{topic.title}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quiz-description" class="form-label">Description</label>
+                            <textarea class="form-control" id="quiz-description" name="quiz-description" rows="8" required>{{quiz.description}}</textarea>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="quiz-questions-order" class="form-label">Question's Ordering</label>
+                            <select class="form-control" id="quiz-questions-order" name="quiz-questions-order" required>
+                                <option disabled>Select questions display order</option>
+                                <option value="Creation" {% if question.questions_order == 'Creation' %}selected{% endif %}>
+                                    Question Creation Order
+                                </option>
+                                <option value="Random" {% if question.questions_order == 'Random' %}selected{% endif %}>
+                                    Random Order
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-header">
+                        <h3 class="card-title">Quiz Questions Section</h3>
+                    </div>
+                    <div class="card-body questions-section">
+                        <div>
+                            {% for question in quiz.get_questions_list %}
+                                <div class="row question-container">
+                                    <div class="form-group">
+                                        <label for="id_form-{{question.pk}}-question" class="form-label">Question Statement</label>
+                                        <input type="text" class="form-control" id="id_form-{{question.pk}}-question" name="form-{{question.pk}}-question" placeholder="Enter question statement" value="{{question.question}}" required>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <label for="id_form-{{question.pk}}-question_hint" class="form-label">
+                                            Hint <span class="text-muted">(Optional)</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="id_form-{{question.pk}}-question_hint" name="form-{{question.pk}}-question_hint" placeholder="Enter hint for student" value="{{question.hint_text}}">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="id_form-{{question.pk}}-question_type" class="form-label">Question Type</label>
+                                        <select class="form-control no-select2" aria-label="select question type" id="id_form-{{question.pk}}-question_type" name="form-{{question.pk}}-question_type" required>
+                                            <option disabled>
+                                                Select question type
+                                            </option>
+                                            <option value="text" {% if question.question_type == 'text' %}selected{% endif %}>
+                                                Text
+                                            </option>
+                                            <option value="number" {% if question.question_type == 'number' %}selected{% endif %}>
+                                                Number
+                                            </option>
+                                            <option value="checkbox" {% if question.question_type == 'checkbox' %}selected{% endif %}>
+                                                Multiple choice question - Multiple correct answers
+                                            </option>
+                                            <option value="radio" {% if question.question_type == 'radio' %}selected{% endif %}>
+                                                Multiple choice question - 1 correct answers
+                                            </option>
+                                            <option value="Code" {% if question.question_type == 'Code' %}selected{% endif %}>
+                                                Code
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="id_form-{{question.pk}}-question_required" class="form-label">Is Required</label>
+                                        <select class="form-control no-select2" aria-label="select if question is required or not" id="id_form-{{question.pk}}-question_required" name="form-{{question.pk}}-question_required" required>
+                                            <option selected>
+                                                Select if question is required or not
+                                            </option>
+                                            <option value="True" {% if question.is_required %}selected{% endif %}>
+                                                Required
+                                            </option>
+                                            <option value="False" {% if not question.is_required %}selected{% endif %}>
+                                                Optional
+                                            </option>
+                                        </select>
+                                    </div>
+                                    {% if question.question_type == 'checkbox' or question.question_type == 'radio' %}
+                                        <div class='form-group col-md-12'>
+                                            <label for="id_form-{{question.pk}}-number_of_options" class="form-label">Number of Options</label>
+                                            <input type="number" class="form-control" id="id_form-{{question.pk}}-number_of_options" min='1' name="form-{{question.pk}}-number_of_options" value="{{question.get_question_choices.count}}" required readonly>
+                                        </div>
+                                        <div class="form-row col-md-12 answers-container">
+                                            {% for choice in question.get_question_choices %}
+                                                <div class='form-row col-md-6'>
+                                                    <div class="col-md-8">
+                                                        <input type="text" id="id_form-{{question.pk}}-question_choice-{{choice.pk}}" name="form-{{question.pk}}-question_choice-{{choice.pk}}" class="form-control answers-input-field" placeholder="Enter multiple choice option" required value="{{choice.choice_statement}}">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="select_time_wrapper">
+                                                            <label class="">
+                                                                <input type="{{question.question_type}}" id="id_form-{{question.pk}}-question_answer" name="form-{{question.pk}}-question_answer" class="d-none" value="{{choice.choice_statement}}" {% if question.correct_answer in choice.choice_statement %}checked{% endif %}>
+                                                                <span class="text-center d-block py-2">Correct Answer</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if question.question_type == 'number' %}
+                                        <div class="form-group col-md-12">
+                                            <label for="id_form-{{question.pk}}-question_answer" class="form-label">
+                                                Correct Answer
+                                            </label>
+                                            <input type="text" id="id_form-{{question.pk}}-question_answer" name="form-{{question.pk}}-question_answer" class="form-control answers-input-field" placeholder="Enter correct answer value for this question" value="{{question.correct_answer}}" required>
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-group">
+                                        <p class="dropdown-divider"></p>
+                                    </div>
+                                </div>    
+                            {% endfor %}
+                            <!-- <a href="#" class="btn btn-outline-primary add-form-row">Add More Questions</a> -->
+                        </div>
+                    </div>
+                    <div class="text-center mb-5">
+                        <button class="btn btn-primary mt-4 mb-0">Submit</button>                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <!-- INTERNAL SELECT2 JS -->
+    <script src="{% static 'assets/plugins/select2/select2.full.min.js'%}"></script>
+    <script src="{% static 'assets/js/select2.js'%}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('select:not(.no-select2)').select2();
+        });
+    </script>
+
+    <script>
+        // Cloning form field
+        function cloneMore(selector, prefix) {
+            var template = document.querySelector(selector);
+            var newElement = template.cloneNode(true);
+
+            // Making sure that multiple-choice-container element is removed in the new cloned question element
+            var multipleChoice = newElement.querySelector('.multiple-choice-container');
+            if (multipleChoice) {
+                newElement.removeChild(multipleChoice);
+            }
+
+            // Making sure that answers container element is removed in the new cloned question element
+            var answerContainer = newElement.querySelector('.answer-container');
+            if (answerContainer) {
+                newElement.removeChild(answerContainer);
+            }
+
+            var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+            var inputs = newElement.querySelectorAll(':not([type=button]):not([type=submit]):not([type=reset])');
+            inputs.forEach(function(input) {
+                var name = input.getAttribute('name');
+                if (name) {
+                    name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+                    var id = 'id_' + name;
+                    if (input.tagName.toLowerCase() === 'select') {
+                        input.setAttribute('name', name);
+                        input.setAttribute('id', id);
+                    } else {
+                        input.setAttribute('name', name);
+                        input.setAttribute('id', id);
+                        input.value = '';
+                        input.checked = false;
+                    }
+                }
+            });
+
+            var labels = newElement.querySelectorAll('label');
+            labels.forEach(function(label) {
+                var forValue = label.getAttribute('for');
+                if (forValue) {
+                    forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
+                    label.setAttribute('for', forValue);
+                }
+            });
+
+            total++;
+            $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+            template.after(newElement);
+            return false;
+        }
+
+        $(document).on('click', '.add-form-row', function(e) {
+            e.preventDefault();
+            cloneMore('.question-container:last-of-type', 'form');
+            return false;
+        });
+
+
+        function addExtraOptions(elem) {
+            const fields = elem.getAttribute('name').split('-');
+            const parentElem = elem.parentNode.parentNode;
+
+            if (elem.value === 'checkbox' || elem.value === 'radio') {
+                const containers = parentElem.querySelectorAll('.answer-container, .multiple-choice-container');
+                containers.forEach(container => container.remove());
+                const newDiv = document.createElement('div');
+                newDiv.classList.add('form-row', 'multiple-choice-container');
+                newDiv.innerHTML = `
+                    <div class='form-group col-md-12'>
+                        <label for="id_form-${fields[1]}-number_of_options" class="form-label">Number of Options</label>
+                        <input type="number" class="form-control" id="id_form-${fields[1]}-number_of_options" min='1' name="form-${fields[1]}-number_of_options" required onchange='createAnswers(this, "${elem.value}");'>
+                    </div>
+                `;
+                parentElem.insertBefore(newDiv, parentElem.lastElementChild);
+            } else if (elem.value === 'number') {
+                let answerContainer = parentElem.querySelector('.answer-container');
+                if (!answerContainer) {
+                    const newDiv = document.createElement('div');
+                    newDiv.classList.add('form-group', 'answer-container');
+                    newDiv.innerHTML = `
+                        <label for="id_form-${fields[1]}-question_answer" class="form-label">Correct Answer</label>
+                        <input type="text"
+                          id="id_form-${fields[1]}-question_answer"
+                          name="form-${fields[1]}-question_answer"
+                          class="form-control answers-input-field"
+                          placeholder="Enter correct answer value for this question"
+                          required
+                        >
+                    `;
+                    parentElem.insertBefore(newDiv, parentElem.lastElementChild);
+                }
+            } else {
+                const answerContainers = parentElem.querySelectorAll('.answer-container');
+                if (answerContainers.length > 0) {
+                    answerContainers.forEach(container => container.remove());
+                }
+            }
+        }
+
+        function createAnswers(element, question_type) {
+            // Get the field name and split it to extract the question ID
+            const fields = element.getAttribute('name').split('-');
+            // Parse the number of answers from the input value
+            const numAnswers = parseInt(element.value);
+            console.log('Number of new answers: ',numAnswers)
+
+            // Get the answers container div, or create it if it doesn't exist
+            let answersDiv = element.parentNode.parentNode.querySelector('.answers-container');
+            if (answersDiv === null) {
+                answersDiv = document.createElement('div');
+                answersDiv.classList.add('form-row', 'col-md-12', 'answers-container');
+                element.parentNode.parentNode.insertBefore(answersDiv, element.parentNode.nextElementSibling);
+            }
+
+            // Get all the answer input fields
+            const answers = answersDiv.querySelectorAll('.form-row');
+
+            console.log('Number of current answers: ',answers.length)
+
+            // If the new number of answers is less than the current number, remove excess input fields
+            if (numAnswers < answers.length) {
+                for (let i = answers.length - 1; i >= numAnswers; i--) {
+                    answersDiv.removeChild(answers[i]);
+                }
+            } else if (numAnswers > answers.length) { // If the new number of answers is greater than the current number, add new input fields
+                for (let i = answers.length; i < numAnswers; i++) {
+                    // Create a new input field with the appropriate name and ID
+                    const inputDiv = document.createElement('div');
+                    inputDiv.classList.add('form-row', 'col-md-6');
+                    inputDiv.innerHTML = `
+                        <div class="col-md-8">
+                            <input type="text"
+                                id="id_form-${fields[1]}-question_choice-${i}"
+                                name="form-${fields[1]}-question_choice-${i}"
+                                class="form-control answers-input-field"
+                                placeholder="Enter multiple choice option"
+                                required
+                            >
+                        </div>
+                        <div class="col-md-4">
+                            <div class="select_time_wrapper">
+                                <label class="">
+                                    <input type="${question_type}" id="id_form-${fields[1]}-question_answer" name="form-${fields[1]}-question_answer" class="d-none" value="Choice ${i}">
+                                    <span class="text-center d-block py-2">Correct Answer</span>
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                    // Add the new input field to the answers container
+                    answersDiv.appendChild(inputDiv);
+                }
+            }
+        }        
+    </script>
+{% endblock %}

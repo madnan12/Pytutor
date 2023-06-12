@@ -1,0 +1,236 @@
+{% block styles %}
+  <style>
+    h2 {
+      font-size: 18px;
+      margin: 10px 0 0 0;
+      font-weight: normal;
+      color: #111;
+    }
+
+    p {
+      font-size: 14px;
+      color: #777;
+      line-height: 18.2px;
+      margin-bottom: 30px;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translatey(5px);
+      }
+      50% {
+        transform: translatey(-5px);
+      }
+      100% {
+        transform: translatey(5px);
+      }
+    }
+
+    @keyframes popInRight {
+      0% {
+        transform: scale(0) translatex(0px);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1) translatex(-30px);
+        opacity: 100%;
+      }
+    }
+
+    @keyframes popInLeft {
+      0% {
+        transform: scale(0) translatex(0px);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1) translatex(30px);
+        opacity: 100%;
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .emptystate__container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .emptystate__body {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px 40px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .illustration__container {
+      width: 160px;
+      height: 160px;
+      background-color: var(--primary-transparentcolor);
+      box-sizing: border-box;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .illustration__container:hover .illustration__containerBackground svg {
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .illustration__containerBackground {
+      width: 160px;
+      height: 160px;
+      position: absolute;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .illustration__elements {
+      animation: float 6s ease-in-out infinite;
+      background-color: none;
+      animation-delay: 2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transform: translatey(5px);
+    }
+
+    .illustration__element {
+      margin-bottom: 15px;
+      background-color: #fff;
+      width: 140px;
+      border-radius: 6px;
+      transform: scale(O);
+      opacity: 0;
+      box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.2);
+      padding: 5px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .illustration__element--right.illustration__element--1 {
+      transform: translatex(-30px);
+      animation: popInRight 0.3s ease-in-out;
+      animation-fill-mode: forwards;
+      transform-origin: top left;
+    }
+
+    .illustration__element--right.illustration__element--3 {
+      transform: translatex(-30px);
+      animation: popInRight 0.3s ease-in-out 0.6s;
+      animation-fill-mode: forwards;
+      transform-origin: top left;
+      margin: 0;
+    }
+
+    .illustration__element--left {
+      transform: translatex(30px);
+      animation: popInLeft 0.3s ease-in-out 0.3s;
+      animation-fill-mode: forwards;
+      transform-origin: top right;
+    }
+
+    .illustration__elementType {
+      width: 24px;
+      height: 24px;
+      background-color: var(--transparent-primary);
+      border-radius: 6px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .illustration__elementWireframe {
+      width: 100px;
+      height: 8px;
+      background-color: #ddd;
+      border-radius: 6px;
+    }
+
+    .button {
+      background-color: var(--primary-bg-color);
+      padding: 16px 28px;
+      width: auto;
+      color: #fff;
+      border-radius: 6px;
+      display: inline-block;
+      transition: 0.5s ease-in-out;
+    }
+
+    .button:hover {
+      background-color: var(--primary-bg-hover);
+    }
+  </style>
+{% endblock %}
+<div class="card p-5">
+  <div class="emptystate__container">
+    <div class="illustration__container">
+      <div class="illustration__containerBackground">
+        <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M95.4364 -6.41777C121.205 -3.10253 147.172 0.915383 164.56 20.1773C183.302 40.9388 194.658 69.1155 188.155 96.2932C181.715 123.21 157.27 139.576 132.853 152.7C106.412 166.912 77.8003 180.117 49.1956 170.983C15.5703 160.245 -14.6761 136.331 -24.4277 102.475C-34.7443 66.6577 -27.9705 24.0501 -0.352662 -1.03982C24.5259 -23.6412 62.0665 -10.711 95.4364 -6.41777Z" stroke="#D2E9FF"/>
+          <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M90.9802 24.8397C107.335 26.9558 123.817 29.5205 134.853 41.8153C146.749 55.0673 153.956 73.0525 149.829 90.3999C145.742 107.581 130.226 118.027 114.729 126.404C97.9461 135.476 79.7865 143.905 61.631 138.074C40.2889 131.22 21.0914 115.956 14.9021 94.3457C8.35409 71.4836 12.6534 44.2873 30.1826 28.2725C45.9731 13.846 69.8002 22.0993 90.9802 24.8397Z" stroke="#D2E9FF"/>
+          <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M86.2972 45.9442C96.2986 47.2315 106.377 48.7916 113.126 56.271C120.4 64.3326 124.808 75.2736 122.284 85.8266C119.785 96.2782 110.297 102.633 100.82 107.729C90.557 113.248 79.4522 118.375 68.3499 114.828C55.299 110.659 43.5595 101.373 39.7746 88.227C35.7705 74.3192 38.3996 57.7748 49.1188 48.0324C58.7749 39.2563 73.3454 44.2771 86.2972 45.9442Z" stroke="#D2E9FF"/>
+          <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M93.8221 5.49329C115.943 8.33241 138.235 11.7733 153.161 28.2689C169.25 46.0487 178.999 70.1787 173.417 93.4532C167.888 116.504 146.903 130.52 125.942 141.759C103.244 153.93 78.6824 165.239 54.1268 157.416C25.2613 148.221 -0.703657 127.741 -9.07492 98.7472C-17.9312 68.0738 -12.1162 31.5855 11.5922 10.0989C32.9492 -9.2566 65.1758 1.81662 93.8221 5.49329Z" stroke="#D2E9FF"/>
+        </svg>
+      </div>
+      <div class="illustration__elements">
+        <div class="illustration__element illustration__element--right illustration__element--1">
+          <div class="illustration__elementType">
+            ?
+          </div>
+          <div class="illustration__elementWireframe">
+
+          </div>
+        </div>
+        <div class="illustration__element illustration__element--left illustration__element--2">
+          <div class="illustration__elementType">
+            ?
+          </div>
+          <div class="illustration__elementWireframe">
+
+          </div>
+        </div>
+        <div class="illustration__element illustration__element--right illustration__element--3">
+          <div class="illustration__elementType">
+            ?
+          </div>
+          <div class="illustration__elementWireframe">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="emptystate__body">
+      <h2>{{message_header}}</h2>
+      <p>
+        {{message_body}}
+      </p>
+      {% if state_btn %}
+        {{ state_btn|safe }}
+      {% endif %}
+    </div>
+  </div>
+</div>

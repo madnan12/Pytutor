@@ -1,0 +1,33 @@
+{% extends 'components/custom-base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}PyTutor-OM - {{title}}{% endblock %}
+{% block content %}
+{% endblock %}
+{% block scripts %}
+    <script>
+        {% if valid %}
+            Swal.fire({
+                icon: 'success',
+                title: 'Congratulations!',
+                text: 'Your account for PyTutor-OM is created successfuly. Please varify your email to acivate your account',
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    window.location.href = `{% url 'users:login' %}`;
+                }
+            })
+        {% else %}
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'This url is expired',
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    window.location.href = `{% url 'users:login' %}`;
+                }
+            })
+        {% endif %}
+    </script>
+{% endblock %}

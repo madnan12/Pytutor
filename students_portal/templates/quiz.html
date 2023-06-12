@@ -1,0 +1,262 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- META DATA -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Sash – Django Bootstrap 5 Admin & Dashboard Template">
+    <meta name="author" content="Spruko Technologies Private Limited">
+    <meta name="keywords" content="admin dashboard bootstrap 5, best admin panel template, bootstrap 5 admin panel, bootstrap 5 admin, cool admin template, django admin panel, django admin template, django admin, django dashboard template, django dashboard, django framework, django, modern admin template, simple dashboard bootstrap, themeforest admin template">
+    {% include  'components/layouts/styles.html' %}
+	<title>PyTutor-Om - {{quiz.title}}</title>
+	<style>
+		.wizard.vertical>.steps ul li .title {
+		    white-space: pre-line;
+		    text-align: justify;
+		}
+
+		.hidden {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="row align-items-center p-5" style="height: 100vh;">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header border-bottom-0 d-flex justify-content-between">
+                	<div class="card-title">
+                        {{course.title}}
+                    </div>
+                    <div class="card-title">
+                    	No of Questions : {{quiz.get_question_count}}
+                    </div>                    
+                </div>
+                <div class="card-body">
+                    <form id="wizard3" method="POST">
+                    	{% csrf_token %}
+                    	{% for question in quiz.get_questions_list %}
+                    		<h3>{{question.question}}</h3>
+	                        <section>
+	                        	{% if question.question_type == 'radio' %}
+	                        		<div class="form-group mb-0 justify-content-end">
+                                        <div class="">
+                                        	{% for choice in question.get_question_choices %}
+	                                            <label class="custom-control custom-radio">
+	                                                <input type="radio" class="custom-control-input" value="{{choice.choice_statement}}" name="question_{{question.pk}}" {% if question.is_required %}required=""{% endif %} data-question-id="{{question.pk}}">
+	                                                <span class="custom-control-label">{{choice.choice_statement}}</span>
+	                                            </label>
+                                            {% endfor %}
+                                            <input type="hidden" class="custom-control" value="0" id="question_{{question.pk}}_attempts" name="question_{{question.pk}}_attempts" data-question-id="{{question.pk}}">
+                                            <input type="hidden" class="custom-control" id="question_{{question.pk}}_time_taken" name="question_{{question.pk}}_time_taken" value="0" data-question-id="{{question.pk}}">
+                                            <input type="hidden" class="custom-control" id="question_{{question.pk}}_hint_used" name="question_{{question.pk}}_hint_used" value="False" data-question-id="{{question.pk}}">
+                                        </div>
+                                        {% if question.hint_text %}
+                                        	<div class=" mt-5">
+                                        		<div class="text-muted text-justify hidden" id="question_{{question.pk}}_hint">{{question.hint_text}}</div>
+                                        		<button class="btn btn-primary hints mt-2" data-question-id="{{question.pk}}" type="button">Hint</button>
+                                    		</div>
+                                    	{% endif %}
+                                    </div>
+	                        	{% elif question.question_type == 'checkbox' %}
+					                <div class="form-group mb-0 justify-content-end">
+                                        <div class="">
+                                        	{% for choice in question.get_question_choices %}
+	                                            <label class="custom-control custom-checkbox">
+	                                                <input type="checkbox" class="custom-control-input" value="{{choice.choice_statement}}" name="question_{{question.pk}}" {% if question.is_required %}required=""{% endif %} data-question-id="{{question.pk}}">
+	                                                <span class="custom-control-label">{{choice.choice_statement}}</span>
+	                                            </label>
+                                            {% endfor %}
+                                            <input type="hidden" class="custom-control" value="0" id="question_{{question.pk}}_attempts" name="question_{{question.pk}}_attempts" data-question-id="{{question.pk}}">
+                                            <input type="hidden" class="custom-control" value="0" id="question_{{question.pk}}_time_taken" name="question_{{question.pk}}_time_taken" data-question-id="{{question.pk}}">
+                                            <input type="hidden" class="custom-control" id="question_{{question.pk}}_hint_used" name="question_{{question.pk}}_hint_used" value="False" data-question-id="{{question.pk}}">
+                                        </div>
+                                        {% if question.hint_text %}
+                                        	<div class=" mt-5">
+                                        		<div class="text-muted text-justify hidden" id="question_{{question.pk}}_hint">{{question.hint_text}}</div>
+                                        		<button class="btn btn-primary hints mt-2" data-question-id="{{question.pk}}" type="button">Hint</button>
+                                    		</div>
+                                    	{% endif %}
+                                    </div>
+	                        	{% elif question.question_type == 'Code' %}
+	                        		<center><strong>Code Question. Feature comming soon</strong></center>
+	                        	{% else %}
+	                        		<div class="control-group form-group">
+		                                <label class="form-label">{{question.question}}</label>
+		                                <input type="{{question.question_type}}" class="form-control required" {% if question.is_required %}required=""{% endif %} name="question_{{question.pk}}" data-question-id="{{question.pk}}">
+		                                <input type="hidden" class="custom-control" value="0" id="question_{{question.pk}}_attempts" name="question_{{question.pk}}_attempts" data-question-id="{{question.pk}}">
+                                        <input type="hidden" class="custom-control" value="0" id="question_{{question.pk}}_time_taken" name="question_{{question.pk}}_time_taken" data-question-id="{{question.pk}}">
+                                        <input type="hidden" class="custom-control" id="question_{{question.pk}}_hint_used" name="question_{{question.pk}}_hint_used" value="False" data-question-id="{{question.pk}}">
+                                        </div>
+                                        {% if question.hint_text %}
+                                        	<div class=" mt-5">
+                                        		<div class="text-muted text-justify hidden" id="question_{{question.pk}}_hint">{{question.hint_text}}</div>
+                                        		<button class="btn btn-primary hints mt-2" data-question-id="{{question.pk}}" type="button">Hint</button>
+                                    		</div>
+                                    	{% endif %}
+		                            </div>
+	                        	{% endif %}
+	                        </section>
+                    	{% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<!-- BACK-TO-TOP -->
+    <a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
+
+    <!-- JQUERY JS -->
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+
+    <!-- BOOTSTRAP JS -->
+    <script src="{% static 'assets/plugins/bootstrap/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- INPUT MASK JS-->
+    <script src="{% static 'assets/plugins/input-mask/jquery.mask.min.js' %}"></script>
+
+    <!-- COLOR THEME JS -->
+    <script type="module" src="{% static 'assets/js/themeColors.js' %}"></script>
+    
+    <!-- STICKY js -->
+    <script src="{% static 'assets/js/sticky.js' %}"></script>
+    
+    <!-- CHART-CIRCLE JS-->
+    <script src="{% static 'assets/js/circle-progress.min.js' %}"></script>
+    
+    <!-- CUSTOM1 SWITCHER JS -->
+    <script type="module" src="{% static 'assets/js/custom1.js' %}"></script>
+
+    <!-- Sweet Alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    
+
+    <!-- FORM WIZARD JS-->
+    <script src="{% static 'assets/plugins/formwizard/jquery.smartWizard.js'%}"></script>
+    <script src="{% static 'assets/plugins/formwizard/fromwizard.js'%}"></script>
+
+    <!-- INTERNAl Jquery.steps js -->
+    <script src="{% static 'assets/plugins/jquery-steps/jquery.steps.min.js'%}"></script>
+    <script src="{% static 'assets/plugins/parsleyjs/parsley.min.js'%}"></script>
+
+    <!-- INTERNAL Accordion-Wizard-Form js-->
+    <script src="{% static 'assets/plugins/accordion-Wizard-Form/jquery.accordion-wizard.min.js'%}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+    	// record start time when form is loaded
+		let startTime = Date.now();
+
+    	$('#wizard3').steps({
+	        headerTag: 'h3',
+	        bodyTag: 'section',
+	        autoFocus: true,
+	        titleTemplate: '<span class="number">#index#<\/span> <span class="title">#title#<\/span>',
+	        stepsOrientation: 1,
+	        onStepChanging: function (event, currentIndex, newIndex) {
+	        	// declaring form
+		        var form = $(this);
+		        // removing the disabled and hidden fields from jquery form validation
+			    form.validate().settings.ignore = ':disabled,:hidden';
+
+			    const is_valid = form.valid();
+
+			    if(is_valid){
+			    	startTime = Date.now();
+			    	return true
+			    }
+		    },
+		    onFinishing: function (event, currentIndex) {
+		        var form = $(this);
+		        form.validate().settings.ignore = ':disabled';
+		        if (form.valid()) {
+		            form.submit();
+		        }
+		    },
+	    });
+
+	    /// initialize validation plugin
+		$("#wizard3").validate({
+		    errorClass: 'is-invalid',
+		    validClass: 'is-valid',
+		    errorElement: 'div',
+		    highlight: function (element, errorClass, validClass) {
+		        $(element).addClass(errorClass).removeClass(validClass);
+		        $(element).closest('.form-group').addClass('has-danger');
+		    },
+		    unhighlight: function (element, errorClass, validClass) {
+		        $(element).addClass(validClass).removeClass(errorClass);
+		        $(element).closest('.form-group').removeClass('has-danger');
+		    },
+		    errorPlacement: function (error, element) {
+		       	if (element.parent().hasClass('input-group')) {
+			        error.insertAfter(element.parent());
+			    } else {
+			    	element.closest('.form-group').append(error)
+			        // error.insertAfter(element);
+			    }
+			    error.addClass('invalid-feedback');
+			}
+		});
+
+		// Get all input fields
+		const inputs = document.querySelectorAll('input');
+
+		// Attach event listener to all input fields
+		inputs.forEach(input => {
+		    input.addEventListener('change', function() {
+		        // Get the question ID from the data attribute
+		        const questionId = $(this).data('question-id');
+		        console.log('Question ID:', questionId);
+
+		        // Get the current value of the time taken input field
+		        const timeTakenInput = document.querySelector(`#question_${questionId}_time_taken`);
+
+		        // Calculate the time taken to answer the question
+		        const endTime = new Date().getTime();
+		        
+		        const timeDiff = endTime - startTime;
+
+		        const seconds = timeDiff / 1000;
+
+		        // Update the time taken input field with the new value
+		        timeTakenInput.value = seconds;
+
+		        // Get the current value of the attempts input field
+		        const attemptsInput = document.querySelector(`#question_${questionId}_attempts`);
+		        let attempts = parseInt(attemptsInput.value);
+
+		        // Increment the attempts counter by 1
+		        attempts++;
+		        attemptsInput.value = attempts;
+		    });
+		});
+
+		// Get all input fields
+		const hints = document.querySelectorAll('.hints');
+
+		// Attach event listener to all input fields
+		hints.forEach(btn => {
+		    btn.addEventListener('click', function() {
+		        // Get the question ID from the data attribute
+		        const questionId = $(this).data('question-id');
+
+		        // Get the current questions hint
+		        const questionHint = document.querySelector(`#question_${questionId}_hint`);
+
+		        questionHint.classList.toggle('hidden');
+
+		        // Get the current hint taken input field
+		        const hintTaken = document.querySelector(`#question_${questionId}_hint_used`);
+		        hintTaken.value = 'True';
+		    });
+		});
+
+    </script>
+</body>
+</html>

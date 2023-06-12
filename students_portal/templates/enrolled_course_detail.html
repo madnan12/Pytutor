@@ -1,0 +1,88 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+        <h1 class="page-title">Enrolled Course Detail</h1>
+        <div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'students_portal:students-dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Enrolled Course Details</li>
+            </ol>
+        </div>
+    </div>
+    <!-- PAGE-HEADER END -->
+
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-md-flex">
+                    <a href="javascript:void(0);" class="d-flex me-4 mb-2"><i class="fe fe-calendar fs-16 me-1 p-3 bg-secondary-transparent text-secondary bradius"></i>
+                        <div class="mt-0 mt-3 ms-1 text-muted font-weight-semibold">{{course.created_on|date:"M d, Y"}}</div>
+                    </a>
+                    <a href="profile" class="d-flex mb-2"><i class="fe fe-user fs-16 me-1 p-3 bg-primary-transparent text-primary bradius"></i>
+                        <div class="mt-0 mt-3 ms-1 text-muted font-weight-semibold">{{course.created_by.get_full_name}}</div>
+                    </a>
+                    <div class="ms-auto">
+                        <a href="javascript:void(0);" class="d-flex mb-2">
+                            <span class="material-symbols-outlined fs-16 me-1 p-3 bg-success-transparent text-success bradius">topic</span>
+                            <div class="mt-0 mt-3 ms-1 text-muted font-weight-semibold">{{course.get_topics_count}} Topics</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>{{course.title}}</h3>
+                <p class="card-text">
+                    {{course.description|truncatewords:100}}
+                </p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Course Progress</div>
+            </div>
+            <div class="card-body pb-0">
+                <ul class="task-list">
+                    {% for topic in course.get_topics_list %}
+                        <li class="d-sm-flex">
+                            <div>
+                                <i class="task-icon bg-primary"></i>
+                                <h6 class="fw-semibold">
+                                    {{topic.title}} <span class="badge bg-info badge-sm ms-4 me-1 mb-1 mt-1">In Progress</span>
+                                </h6>
+                                <p class="text-muted fs-12 text-justify">
+                                    {{topic.description}}
+                                </p>
+                                <div class="d-flex mb-3">
+                                    <h6 class="fw-semibold me-5">Subject: {{course.subject.title}}</h6>
+                                    <h6 class="fw-semibold">No. of Quizes: {{topic.get_quizes_list.count}}</h6>
+                                </div>
+                                <ul class="task-list">
+                                    {% for quiz in topic.get_quizes_list %}
+                                        <li class="d-sm-flex">
+                                            <div>
+                                                <i class="task-icon bg-secondary"></i>
+                                                <h6 class="fw-semibold">
+                                                    {{quiz.title}}
+                                                </h6>
+                                                <p class="text-muted fs-12 text-justify">
+                                                    {{quiz.description}}
+                                                </p>
+                                                <div class="d-flex mb-3">
+                                                    <h6 class="fw-semibold">No. of Questions: {{quiz.get_question_count}}</h6>
+                                                </div>
+                                                <a href="{% url 'students_portal:take-quiz' course_slug=course.slug topic_slug=topic.slug quiz_slug=quiz.slug %}" class="btn btn-primary me-4 mb-2">Take Quiz</a>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

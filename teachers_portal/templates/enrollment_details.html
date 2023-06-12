@@ -1,0 +1,182 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+        <h1 class="page-title">Enrollment List</h1>
+        <div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'teachers_portal:teachers-dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Enrollment List</li>
+            </ol>
+        </div>
+    </div>
+    <!-- PAGE-HEADER END -->
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Enrollment List</h3>
+                    <div class="text-end">
+                        <a href="{% url 'teachers_portal:quiz' pk=student_id %}" class="btn btn-outline-primary">Check Quizzes</a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="grid-margin">
+                        <div class="">
+                            <div class="panel panel-primary">
+                                <div class="panel-body tabs-menu-body border-0 pt-0">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab5">
+                                            <div class="table-responsive">
+                                                <table id="data-table" class="table table-bordered text-nowrap mb-0">
+                                                    <thead class="border-top">
+                                                        <tr>
+                                                            <th class="bg-transparent border-bottom-0" style="width: 5%;">
+                                                                Sr. #
+                                                            </th>
+                                                            <th class="bg-transparent border-bottom-0">
+                                                                Course
+                                                            </th>
+                                                            <th class="bg-transparent border-bottom-0">
+                                                                Total Topics
+                                                            </th>
+                                                            <th class="bg-transparent border-bottom-0">
+                                                                Topics Progress
+                                                            </th>
+                                                            <th class="bg-transparent border-bottom-0">
+                                                                Total Quizzes
+                                                            </th>
+                                                            <th class="bg-transparent border-bottom-0">
+                                                                Quizzes Progress
+                                                            </th>
+                                                            <th class="bg-transparent border-bottom-0">
+                                                                Enroll Date
+                                                            </th>
+                                                            <th class="bg-transparent border-bottom-0">
+                                                                Action
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for object in student_enrollments %}
+                                                             <tr class="border-bottom">
+                                                                <td class="text-start">
+                                                                    <div class="mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-0 fs-14 fw-semibold">
+                                                                            {{forloop.counter}}
+                                                                        </h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="mt-0 mt-sm-2 d-block">
+                                                                        <span>
+                                                                            {{object.course}}
+                                                                        </span>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <div class="mt-0 mt-sm-3 d-block">
+                                                                            <span>
+                                                                                {{object.total_topics}}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                   
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <div class="mt-0 mt-sm-3 d-block">
+                                                                            <span>
+                                                                                {{object.get_topics_progress_percent}}%
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                   
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <div class="mt-0 mt-sm-3 d-block">
+                                                                            <span>
+                                                                                {{object.total_quizes}}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                   
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <div class="mt-0 mt-sm-3 d-block">
+                                                                            <span>
+                                                                                {{object.get_quizzes_progress_percent}}%
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+
+                                                                <td>
+                                                                    <div class="d-flex">
+                                                                        <div class="mt-0 mt-sm-3 d-block">
+                                                                            <span>
+                                                                                {{object.enroll_date}}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+
+                                                                <td>
+                                                                    <div class="g-2">
+                                                                        <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="View Details" href="#">
+                                                                            <span class="fe fe-eye fs-14"></span>
+                                                                        </a> 
+                                                                    </div>
+                                                                </td>
+                                                            </tr> 
+                                                        {% empty %}
+                                                            <tr class="border-bottom">
+                                                                <td class="text-center" colspan="4">
+                                                                    <div class="mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-0 fs-14 fw-semibold">
+                                                                            No enrollment yet
+                                                                        </h6>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <!-- INTERNAL Data tables js-->
+    <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+    <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+    <script>
+        //______Data-Table
+        $('#data-table').DataTable({
+            "order": [
+                [0, "desc"]
+            ],
+            order: [],
+            columnDefs: [{ orderable: false, targets: [2, 6] }],
+            language: {
+                searchPlaceholder: 'Search...',
+                sSearch: '',
+            }
+        });
+    </script>
+{% endblock %}
